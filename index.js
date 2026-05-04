@@ -1,6 +1,50 @@
+import { db, auth } from './firebase-config.js';
+import { collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+import { GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+
 // Mobile Navigation Toggle
 const menuBtn = document.querySelector('.menu-btn');
 const navLinks = document.querySelector('.nav-links');
+
+// Login / User State Handling
+const loginBtn = document.getElementById('login-btn');
+const userProfile = document.getElementById('user-profile');
+const provider = new GoogleAuthProvider();
+
+// Check if running via file:// protocol
+if (window.location.protocol === 'file:') {
+    alert("IMPORTANT: Firebase Authentication will NOT work if you open the HTML file directly. Please use a local server (like Live Server or 'npm run dev').");
+}
+
+loginBtn.addEventListener('click', async () => {
+    if (auth.currentUser) {
+        await signOut(auth);
+    } else {
+        try {
+            await signInWithPopup(auth, provider);
+        } catch (error) {
+            console.error("Login Error:", error);
+            if (error.code === 'auth/unauthorized-domain') {
+                alert("🚨 FIREBASE SETUP REQUIRED:\n\nYour current domain (" + window.location.hostname + ") is not authorized for login.\n\n1. Go to Firebase Console > Authentication > Settings\n2. Click 'Authorized domains'\n3. Add '" + window.location.hostname + "' to the list.\n4. Refresh and try again!");
+            } else if (error.code === 'auth/operation-not-allowed') {
+                alert("🚨 GOOGLE AUTH NOT ENABLED:\n\nPlease enable the Google Sign-In provider in your Firebase Console (Authentication > Sign-in method).");
+            } else {
+                alert("Failed to login with Google: " + error.message);
+            }
+        }
+    }
+});
+
+onAuthStateChanged(auth, (user) => {
+    if (user) {
+        loginBtn.innerHTML = '<i class="fas fa-sign-out-alt"></i> Logout';
+        userProfile.style.display = 'block';
+        userProfile.innerText = `Hi, ${user.displayName.split(' ')[0]}`;
+    } else {
+        loginBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Login';
+        userProfile.style.display = 'none';
+    }
+});
 
 menuBtn.addEventListener('click', () => {
     navLinks.classList.toggle('active');
@@ -24,15 +68,13 @@ document.querySelectorAll('.nav-links a').forEach(link => {
     });
 });
 
-// Sticky Navbar Background
+// Sticky Navbar Background with scrolled class
 window.addEventListener('scroll', () => {
     const nav = document.querySelector('.navbar');
     if (window.scrollY > 50) {
-        nav.style.background = 'rgba(10, 10, 10, 0.95)';
-        nav.style.boxShadow = '0 5px 15px rgba(0,0,0,0.5)';
+        nav.classList.add('scrolled');
     } else {
-        nav.style.background = 'rgba(0, 0, 0, 0.8)';
-        nav.style.boxShadow = 'none';
+        nav.classList.remove('scrolled');
     }
 });
 
@@ -103,17 +145,90 @@ window.addEventListener('scroll', () => {
     }
 });
 
-// Contact Form handling
+// Contact Form handling — Separate WhatsApp & Email buttons
 const contactForm = document.getElementById('contact-form');
 if (contactForm) {
-    contactForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-        const msg = document.getElementById('form-message');
+    const msg = document.getElementById('form-message');
+    const whatsappBtn = document.getElementById('send-whatsapp-btn');
+    const emailBtn = document.getElementById('send-email-btn');
+
+    // Validate inputs before sending
+    function getFormData() {
+        const name = document.getElementById('name').value.trim();
+        const mobile = document.getElementById('mobile').value.trim();
+        if (!name || !mobile) {
+            msg.style.display = 'block';
+            msg.style.color = '#ef4444';
+            msg.innerText = "Please enter both your name and mobile number.";
+            setTimeout(() => { msg.style.display = 'none'; }, 4000);
+            return null;
+        }
+        return { name, mobile };
+    }
+
+    // Save lead to Firestore (shared by both buttons)
+    async function saveLeadToFirestore(name, mobile, channel) {
+        try {
+            await addDoc(collection(db, "leads"), {
+                name: name,
+                mobile: mobile,
+                source: 'landing_page',
+                channel: channel,
+                status: 'new',
+                timestamp: serverTimestamp()
+            });
+        } catch (err) {
+            console.warn("Firestore save failed (non-blocking):", err);
+        }
+    }
+
+    // --- WhatsApp Button ---
+    whatsappBtn.addEventListener('click', async () => {
+        const data = getFormData();
+        if (!data) return;
+
+        const originalText = whatsappBtn.innerHTML;
+        whatsappBtn.disabled = true;
+        whatsappBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
+
+        await saveLeadToFirestore(data.name, data.mobile, 'whatsapp');
+
+        const whatsappNumber = '919642767824';
+        const whatsappMessage = `🏋️ *New Callback Request*%0A%0A👤 *Name:* ${encodeURIComponent(data.name)}%0A📱 *Mobile:* ${encodeURIComponent(data.mobile)}%0A📍 *Source:* Body Station Website%0A⏰ *Time:* ${encodeURIComponent(new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' }))}`;
+        window.open(`https://api.whatsapp.com/send?phone=${whatsappNumber}&text=${whatsappMessage}`, '_blank');
+
         msg.style.display = 'block';
+        msg.style.color = '#34d399';
+        msg.innerText = "✅ Sent via WhatsApp! We'll call you shortly.";
         contactForm.reset();
-        setTimeout(() => {
-            msg.style.display = 'none';
-        }, 4000);
+        whatsappBtn.disabled = false;
+        whatsappBtn.innerHTML = originalText;
+        setTimeout(() => { msg.style.display = 'none'; }, 5000);
+    });
+
+    // --- Email Button ---
+    emailBtn.addEventListener('click', async () => {
+        const data = getFormData();
+        if (!data) return;
+
+        const originalText = emailBtn.innerHTML;
+        emailBtn.disabled = true;
+        emailBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
+
+        await saveLeadToFirestore(data.name, data.mobile, 'email');
+
+        const ownerEmail = 'aqibhussain9833@gmail.com';
+        const emailSubject = encodeURIComponent(`New Callback Request - ${data.name}`);
+        const emailBody = encodeURIComponent(`New Callback Request from Body Station Website\n\nName: ${data.name}\nMobile: ${data.mobile}\nSource: Landing Page\nTime: ${new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })}\n\nPlease contact the customer as soon as possible.`);
+        window.open(`mailto:${ownerEmail}?subject=${emailSubject}&body=${emailBody}`, '_blank');
+
+        msg.style.display = 'block';
+        msg.style.color = '#34d399';
+        msg.innerText = "✅ Email client opened! We'll call you shortly.";
+        contactForm.reset();
+        emailBtn.disabled = false;
+        emailBtn.innerHTML = originalText;
+        setTimeout(() => { msg.style.display = 'none'; }, 5000);
     });
 }
 
@@ -138,39 +253,47 @@ closeChat.addEventListener('click', () => {
 const intents = [
     {
         pattern: /(price|cost|fee|membership|plan|pay|charges|amount|package|subscribe)/i,
-        response: "We have 3 plans designed for different goals:<br>- <b>Basic (₹999/mo):</b> Standard access to cardio & weights.<br>- <b>Standard (₹1499/mo):</b> Unlimited access, diet chart, and floor guidance.<br>- <b>Personal Training (₹2999/mo):</b> 1-on-1 sessions, custom nutrition, and weekly check-ins.<br>Which one sounds best for you?"
+        response: "We have flexible plans to fit your journey! 💪<br>- <b>Basic:</b> ₹1200 / month<br>- <b>Standard:</b> ₹2500 / 3 months (Best Value!)<br>- <b>Pro:</b> ₹4000 / 6 months (Includes Trainer guidance)<br>- <b>Elite:</b> ₹7500 / 12 months (Full support & priority)<br>Which one fits your goal? Join now and start your transformation!"
     },
     {
         pattern: /(diet|food|eat|nutrition|meal|protein|carbs|fat)/i,
-        response: "Nutrition is 70% of fitness! If you're looking to bulk up, focus on a caloric surplus with high protein (chicken, paneer, eggs). For weight loss, maintain a calorie deficit. Our <b>Standard Plan (₹1499)</b> includes a basic diet chart, and our <b>PT Plan (₹2999)</b> gives you a fully customized weekly nutrition breakdown."
+        response: "Nutrition is 70% of the game! 🥗 Our trainers provide expert diet advice tailored to your goals. Generally, we recommend high protein and consistent hydration. For a custom breakdown, our <b>Elite Plan</b> is perfect. Ready to eat clean and train mean?"
     },
     {
         pattern: /(time|timing|open|close|hour|morning|evening|sunday|schedule)/i,
-        response: "We are open from <b>5:00 AM to 10:00 PM, Monday through Saturday</b>. The gym is closed on Sundays so our muscles (and trainers!) can recover."
+        response: "We're here for your convenience! ⏰<br><b>Mon–Sat:</b> 5:00 AM – 10:00 AM & 5:00 PM – 10:00 PM<br><b>Sunday:</b> 6:00 AM – 10:00 AM (Evening: Closed for recovery).<br>When are you planning to visit?"
     },
     {
         pattern: /(weight loss|fat loss|lose weight|thin|slim|cardio|stamina)/i,
-        response: "Weight loss is absolutely achievable here! You'll want to combine intense cardio sessions (treadmills, ellipticals) with strength training to boost your metabolism, plus a strict diet. I highly recommend our Personal Training program for the fastest fat loss results."
+        response: "You can do it! For weight loss, I recommend our <b>3 or 6-month plans</b>. Our trainers will guide you through high-burn cardio and strength training to melt that fat away. Let's start your transformation! 🔥"
     },
     {
         pattern: /(muscle|gain|bulk|chest|biceps|weight|body building|size|grow)/i,
-        response: "To build serious muscle, you need progressive overload and proper protein intake. Body Station is fully equipped with heavy free weights, squat racks, and isolation machines to help you bulk up. Train hard and eat big!"
+        response: "Time to get strong! 🏋️‍♂️ For muscle gain, our <b>6 or 12-month plans</b> are ideal for long-term growth. Our facility is fully equipped for heavy lifting and isolation. Let's build those gains!"
     },
     {
-        pattern: /(trainer|coach|personal training|pt|guide|help|teach|support)/i,
-        response: "Our certified personal trainers are here to push your limits safely. For ₹2999/mo, a dedicated coach will build your workout split, correct your form, monitor your diet, and ensure you hit your goals optimally."
+        pattern: /(trainer|coach|personal training|pt|guide|help|teach|support|motivation)/i,
+        response: "We have 1–3 expert trainers ready to motivate you! They specialize in strength, weight loss, and diet guidance. You'll get the personal support needed to smash your limits. Want to train with the best?"
+    },
+    {
+        pattern: /(owner|admin|database|firebase|system|private|security|password|email|staff|logic|internal)/i,
+        response: "I'm here to help with gym services, plans, and fitness guidance. For that request, please contact the gym directly. 🤝"
     },
     {
         pattern: /(where|location|address|shadnagar|map|place|direction)/i,
-        response: "We're located right on the Main Road in Shadnagar, Telangana 509216. You can scroll down to the bottom of this page to see us on Google Maps!"
+        response: "We're conveniently located on the Main Road in Shadnagar! 📍 <a href='https://maps.app.goo.gl/AWBh5AUiCMBtF5bS7' target='_blank' rel='noopener noreferrer' style='color: var(--accent-color); font-weight: bold;'>View on Google Maps</a>. Hope to see you there soon!"
     },
     {
         pattern: /(hi|hello|hey|good morning|good evening|how are you|greet)/i,
-        response: "Hello there! 👋 I am the Body Station Virtual Assistant. What's on your mind today? I can help you with membership prices, gym timings, diet tips, or workout advice!"
+        response: "Hi there! 👋 Welcome to Body Station. I'm your AI assistant, ready to help you hit your fitness goals. Ask me about our plans, timings, or for some quick tips!"
+    },
+    {
+        pattern: /(instagram|social|ig|follow|photo|video)/i,
+        response: "Join our community on Instagram for daily motivation and success stories! 📸 <a href='https://www.instagram.com/bodystationthefitnessclub?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==' target='_blank' rel='noopener noreferrer' style='color: var(--accent-color); font-weight: bold;'>@bodystationthefitnessclub</a>"
     },
     {
         pattern: /(thank|thanks|appreciate|ok|great|awesome|cool)/i,
-        response: "You're very welcome! Let me know if you have any other questions, or feel free to drop by the gym or call us at 9642767824 to get started."
+        response: "You're very welcome! Let's get to work. Feel free to visit us or join today! 🚀"
     }
 ];
 
@@ -186,7 +309,7 @@ function triggerBotResponse(userText) {
     chatMessages.scrollTop = chatMessages.scrollHeight;
 
     // Process Advanced Local NLP
-    let replyText = "That's a great question! While my circuits are quite smart, my current logic is optimized specifically for Body Station. Could you rephrase your question to ask about our **plans, prices, diets, timings, or trainers**?";
+    let replyText = "I'm not fully sure about that, but I can certainly help with our **membership plans, gym timings, trainer info, or fitness tips**! Could you rephrase your question, or visit the gym for more details? 🏋️‍♂️";
     
     // Check intents via regex
     for (const intent of intents) {

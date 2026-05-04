@@ -1,0 +1,26 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // CUSTOMER DATA: Strict Owner-Only Access
+    match /customers/{customerId} {
+      // ONLY the authenticated owner with 'admin: true' custom claim can access this
+      allow read, write: if request.auth != null && request.auth.token.admin == true;
+    }
+    
+    // LEADS DATA: Public Submission, Admin-Only Management
+    match /leads/{leadId} {
+      // Anyone can submit a lead (contact form)
+      allow create: if true;
+      
+      // ONLY the owner/admin can see or manage the leads
+      allow read, update, delete: if request.auth != null && request.auth.token.admin == true;
+    }
+    
+    // GLOBAL FALLBACK: Deny everything else
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
