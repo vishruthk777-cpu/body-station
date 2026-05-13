@@ -8,6 +8,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <!-- FontAwesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" sizes="32x32" href="logo_sizes/logo_favicon_32x32.png">
     <link rel="stylesheet" href="index.css">
 </head>
 <body>
@@ -18,18 +20,34 @@
     </a>
 
     <!-- Navbar -->
-    <nav class="navbar glass">
-        <div class="logo">
-            <span class="highlight">Body Station</span><br>
-            <span class="tagline">The Fitness Club | బాడీ స్టేషన్ ది ఫిట్నెస్ క్లబ్</span>
-        </div>
+    <nav class="navbar glass" id="main-navbar">
+        <a href="#home" class="logo" id="navbar-logo">
+            <img 
+                src="logo_sizes/logo_navbar_2x.png" 
+                srcset="logo_sizes/logo_navbar.png 1x, logo_sizes/logo_navbar_2x.png 2x"
+                alt="Body Station Fitness Club Logo" 
+                class="logo-img"
+                width="59"
+                height="50"
+                loading="eager"
+            >
+            <div class="logo-text">
+                <span class="logo-brand"><span class="logo-body">Body</span> <span class="logo-station highlight">Station</span></span>
+                <span class="tagline">The Fitness Club | బాడీ స్టేషన్ ది ఫిట్నెస్ క్లబ్</span>
+            </div>
+        </a>
         <ul class="nav-links">
             <li><a href="#home">Home</a></li>
             <li><a href="#about">About</a></li>
             <li><a href="#why-us">Why Us</a></li>
             <li><a href="#services">Services</a></li>
             <li><a href="#pricing">Plans</a></li>
+            <li><a href="#timings-trainers">Timings</a></li>
             <li><a href="#contact">Contact</a></li>
+            <li><a href="https://www.instagram.com/bodystationthefitnessclub?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==" target="_blank" rel="noopener noreferrer"><i class="fab fa-instagram"></i> Instagram</a></li>
+
+            <li><button id="login-btn" class="btn outline-btn" style="padding: 0.5rem 1rem;"><i class="fas fa-sign-in-alt"></i> Login</button></li>
+            <li id="user-profile" style="display:none; color:white; margin-left: 1rem; font-weight: 600;"></li>
         </ul>
         <button class="menu-btn"><i class="fas fa-bars"></i></button>
     </nav>
@@ -139,40 +157,182 @@
     <section id="pricing" class="pricing padding-section">
         <div class="text-center mb-4 scroll-anim">
             <h2 class="section-title" style="margin-bottom: 0.5rem;">Choose Your <span class="highlight">Plan</span></h2>
+            <p class="pricing-subtitle">Flexible plans designed to fit your fitness journey</p>
             <p class="urgency-text"><i class="fas fa-fire"></i> Limited Slots Available. Join Before Prices Increase!</p>
         </div>
+
+        <!-- Fixed Price Badge -->
+        <div class="fixed-price-badge scroll-anim">
+            <i class="fas fa-lock"></i> Fixed Price — No Bargaining
+        </div>
+
+        <!-- Pricing Image Banner -->
+        <div class="pricing-image-wrapper scroll-anim">
+            <img src="pricing-banner.png" alt="Body Station Gym Pricing — 1 Month ₹1200, 3 Months ₹2500, 6 Months ₹4000, 12 Months ₹7500" loading="lazy" class="pricing-banner-img">
+        </div>
+
+        <!-- 4 Pricing Cards -->
         <div class="pricing-cards">
-            <div class="card glass scroll-anim">
+            <!-- Basic Plan -->
+            <div class="card glass scroll-anim" id="plan-basic">
+                <div class="plan-icon"><i class="fas fa-dumbbell"></i></div>
                 <h3>Basic Plan</h3>
-                <h2 class="price">₹999<span>/mo</span></h2>
+                <h2 class="price">₹1,200<span>/ 1 month</span></h2>
                 <ul class="plan-features">
-                    <li><i class="fas fa-check-circle highlight"></i> Standard Gym Access</li>
-                    <li><i class="fas fa-check-circle highlight"></i> Cardio & Weights</li>
-                    <li class="muted"><i class="fas fa-times-circle invalid"></i> Personal Trainer</li>
+                    <li><i class="fas fa-check-circle highlight"></i> Access to gym equipment</li>
+                    <li><i class="fas fa-check-circle highlight"></i> Cardio & free weights</li>
+                    <li><i class="fas fa-check-circle highlight"></i> Ideal for beginners</li>
+                    <li class="muted"><i class="fas fa-times-circle invalid"></i> Trainer guidance</li>
+                    <li class="muted"><i class="fas fa-times-circle invalid"></i> Diet plan</li>
                 </ul>
-                <a href="#contact" class="btn secondary-btn w-100">Select Basic</a>
+                <a href="#contact" class="btn secondary-btn w-100 join-now-btn">Join Now</a>
             </div>
-            <div class="card glass popular scroll-anim">
+
+            <!-- Standard Plan (Most Popular) -->
+            <div class="card glass popular scroll-anim" id="plan-standard">
                 <div class="ribbon">Most Popular</div>
+                <div class="plan-icon popular-icon"><i class="fas fa-fire-alt"></i></div>
                 <h3>Standard Plan</h3>
-                <h2 class="price highlight">₹1499<span>/mo</span></h2>
+                <h2 class="price highlight">₹2,500<span>/ 3 months</span></h2>
+                <div class="save-badge"><i class="fas fa-tag"></i> Best value for consistency</div>
                 <ul class="plan-features">
-                    <li><i class="fas fa-check-circle highlight"></i> Unlimited Gym Access</li>
-                    <li><i class="fas fa-check-circle highlight"></i> Basic Diet Chart</li>
-                    <li><i class="fas fa-check-circle highlight"></i> Floor Guidance</li>
+                    <li><i class="fas fa-check-circle highlight"></i> Full gym access</li>
+                    <li><i class="fas fa-check-circle highlight"></i> Cardio & weight training</li>
+                    <li><i class="fas fa-check-circle highlight"></i> Basic floor guidance</li>
+                    <li><i class="fas fa-check-circle highlight"></i> Locker access</li>
+                    <li class="muted"><i class="fas fa-times-circle invalid"></i> Personal trainer</li>
                 </ul>
-                <a href="#contact" class="btn primary-btn w-100">Select Standard</a>
+                <a href="#contact" class="btn primary-btn w-100 join-now-btn">Join Now</a>
             </div>
-            <div class="card glass scroll-anim">
-                <h3>Personal Training</h3>
-                <h2 class="price">₹2999<span>/mo</span></h2>
+
+            <!-- Pro Plan -->
+            <div class="card glass scroll-anim" id="plan-pro">
+                <div class="plan-icon"><i class="fas fa-bolt"></i></div>
+                <h3>Pro Plan</h3>
+                <h2 class="price">₹4,000<span>/ 6 months</span></h2>
                 <ul class="plan-features">
-                    <li><i class="fas fa-check-circle highlight"></i> 1-on-1 Sessions</li>
-                    <li><i class="fas fa-check-circle highlight"></i> Custom Diet Plan</li>
-                    <li><i class="fas fa-check-circle highlight"></i> Weekly Progress Tracking</li>
+                    <li><i class="fas fa-check-circle highlight"></i> Gym + basic trainer guidance</li>
+                    <li><i class="fas fa-check-circle highlight"></i> Personalized workout split</li>
+                    <li><i class="fas fa-check-circle highlight"></i> Basic diet chart</li>
+                    <li><i class="fas fa-check-circle highlight"></i> Faster results</li>
+                    <li><i class="fas fa-check-circle highlight"></i> Progress tracking</li>
                 </ul>
-                <a href="#contact" class="btn secondary-btn w-100">Select PT</a>
+                <a href="#contact" class="btn secondary-btn w-100 join-now-btn">Join Now</a>
             </div>
+
+            <!-- Elite Plan -->
+            <div class="card glass scroll-anim" id="plan-elite">
+                <div class="elite-ribbon">👑 Elite</div>
+                <div class="plan-icon elite-icon"><i class="fas fa-crown"></i></div>
+                <h3>Elite Plan</h3>
+                <h2 class="price">₹7,500<span>/ 12 months</span></h2>
+                <ul class="plan-features">
+                    <li><i class="fas fa-check-circle highlight"></i> Full access + priority support</li>
+                    <li><i class="fas fa-check-circle highlight"></i> Dedicated personal trainer</li>
+                    <li><i class="fas fa-check-circle highlight"></i> Custom diet & nutrition plan</li>
+                    <li><i class="fas fa-check-circle highlight"></i> Weekly progress tracking</li>
+                    <li><i class="fas fa-check-circle highlight"></i> Best long-term transformation</li>
+                </ul>
+                <a href="#contact" class="btn secondary-btn w-100 join-now-btn">Join Now</a>
+            </div>
+        </div>
+
+        <!-- Pricing Description -->
+        <div class="pricing-description scroll-anim">
+            <p>Our pricing is designed to be simple, transparent, and affordable. Whether you're starting your fitness journey or pushing for advanced goals, we have a plan that fits your needs. <strong>No hidden charges, no bargaining — just results.</strong></p>
+        </div>
+
+        <!-- Festival Offer Banner -->
+        <div class="festival-offer scroll-anim" id="festival-offer">
+            <div class="festival-glow"></div>
+            <div class="festival-content">
+                <div class="festival-icon"><i class="fas fa-gift"></i></div>
+                <div class="festival-text">
+                    <h3>🔥 Festival Special Offer</h3>
+                    <p>Limited-time discounts on all plans! Get a <strong>free 1-week extension</strong> OR a <strong>free diet plan</strong> when you sign up now.</p>
+                </div>
+                <div class="festival-urgency">
+                    <span class="urgency-pill"><i class="fas fa-clock"></i> Limited Time</span>
+                </div>
+                <a href="#contact" class="btn primary-btn festival-cta">Claim Offer</a>
+            </div>
+        </div>
+    </section>
+    
+    <!-- 6. Timings & Trainers Section -->
+    <section id="timings-trainers" class="timings-trainers padding-section">
+        <div class="timings-trainers-grid">
+            <!-- Part 1: Gym Timings -->
+            <div class="timings-column scroll-anim">
+                <div class="section-header mb-4">
+                    <h2 class="section-title">Gym <span class="highlight">Timings</span></h2>
+                    <p class="pricing-subtitle">Flexible hours designed for your convenience</p>
+                </div>
+                <div class="timings-card glass glow-hover">
+                    <div class="timing-row">
+                        <div class="day-group">
+                            <i class="fas fa-calendar-alt highlight"></i>
+                            <h4>MONDAY - SATURDAY</h4>
+                        </div>
+                        <div class="time-details">
+                            <div class="time-block">
+                                <i class="far fa-clock"></i>
+                                <span>Morning: 5:00 AM – 10:00 AM</span>
+                            </div>
+                            <div class="time-block">
+                                <i class="far fa-clock"></i>
+                                <span>Evening: 5:00 PM – 10:00 PM</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="subtle-separator"></div>
+                    <div class="timing-row">
+                        <div class="day-group">
+                            <i class="fas fa-calendar-day highlight"></i>
+                            <h4>SUNDAY</h4>
+                        </div>
+                        <div class="time-details">
+                            <div class="time-block">
+                                <i class="far fa-clock"></i>
+                                <span>Morning: 6:00 AM – 10:00 AM</span>
+                            </div>
+                            <div class="time-block closed-status">
+                                <i class="fas fa-door-closed"></i>
+                                <span>Evening: Closed</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Part 2: Expert Trainers -->
+            <div class="trainers-column scroll-anim">
+                <div class="section-header mb-4">
+                    <h2 class="section-title">Expert <span class="highlight">Trainers</span></h2>
+                    <p class="trainer-description">
+                        Our certified trainers are dedicated to guiding you at every step of your fitness journey. Whether you're a beginner or advanced, we provide complete support in workouts, strength building, weight loss, and overall health improvement.
+                    </p>
+                </div>
+                <div class="trainers-info-card glass">
+                    <div class="trainer-highlight-icon"><i class="fas fa-dumbbell"></i></div>
+                    <ul class="trainers-features">
+                        <li><i class="fas fa-user-check highlight"></i> 1–3 Professional Trainers Available</li>
+                        <li><i class="fas fa-heartbeat highlight"></i> Personal guidance & Motivation</li>
+                        <li><i class="fas fa-clipboard-list highlight"></i> Custom Workout planning</li>
+                        <li><i class="fas fa-apple-alt highlight"></i> Diet & health advice</li>
+                    </ul>
+                    <div class="experience-tag">
+                        <i class="fas fa-award"></i>
+                        <span>Certified Professionals</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CTA Section -->
+        <div class="timings-cta text-center mt-5 scroll-anim">
+            <a href="#contact" class="btn primary-btn">Train With Experts</a>
+            <a href="#pricing" class="btn outline-btn" style="margin-left: 1rem;">Join Now</a>
         </div>
     </section>
 
@@ -198,18 +358,83 @@
         </div>
     </section>
 
-    <!-- 8. Gallery Section -->
     <section id="gallery" class="gallery padding-section">
         <h2 class="section-title text-center">Inside <span class="highlight">The Gym</span></h2>
+        <p class="gallery-subtitle text-center">Take a virtual tour of our fully-equipped, state-of-the-art facility</p>
         <div class="gallery-grid">
-            <img class="scroll-anim" src="hero.png" onerror="this.src='https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?auto=format&fit=crop&w=800&q=80'" alt="Gym Floor">
-            <img class="scroll-anim" src="cardio.png" onerror="this.src='https://images.unsplash.com/photo-1540497077202-7c8a3999166f?auto=format&fit=crop&w=800&q=80'" alt="Cardio Section">
-            <img class="scroll-anim" src="weights.png" onerror="this.src='https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?auto=format&fit=crop&w=800&q=80'" alt="Free Weights">
-            <img class="scroll-anim" src="about.png" onerror="this.src='https://images.unsplash.com/photo-1517836357463-d25dfeac3438?auto=format&fit=crop&w=800&q=80'" alt="Training Environment">
+            <div class="gallery-item scroll-anim">
+                <img src="gallery/gym1.jpg" alt="Body Station Gym Floor - Decorated Interior" loading="lazy">
+                <div class="gallery-overlay"><span>Gym Floor</span></div>
+            </div>
+            <div class="gallery-item scroll-anim">
+                <img src="gallery/gym2.jpg" alt="Dumbbell Rack - Full Weight Collection" loading="lazy">
+                <div class="gallery-overlay"><span>Free Weights</span></div>
+            </div>
+            <div class="gallery-item scroll-anim">
+                <img src="gallery/gym3.jpg" alt="Cable Crossover & Cardio Zone" loading="lazy">
+                <div class="gallery-overlay"><span>Cardio Zone</span></div>
+            </div>
+            <div class="gallery-item scroll-anim">
+                <img src="gallery/gym4.jpg" alt="Full Gym View - Training Floor" loading="lazy">
+                <div class="gallery-overlay"><span>Training Area</span></div>
+            </div>
+            <div class="gallery-item scroll-anim">
+                <img src="gallery/gym5.jpg" alt="Strength Training Section" loading="lazy">
+                <div class="gallery-overlay"><span>Strength Training</span></div>
+            </div>
+            <div class="gallery-item scroll-anim">
+                <img src="gallery/gym6.jpg" alt="Modern Fitness Equipment" loading="lazy">
+                <div class="gallery-overlay"><span>Modern Equipment</span></div>
+            </div>
+            <div class="gallery-item scroll-anim">
+                <img src="gallery/gym7.jpg" alt="Heavy Lifting Zone" loading="lazy">
+                <div class="gallery-overlay"><span>Heavy Lifting</span></div>
+            </div>
+            <div class="gallery-item scroll-anim">
+                <img src="gallery/gym8.jpg" alt="Stretching and Yoga Area" loading="lazy">
+                <div class="gallery-overlay"><span>Stretching Area</span></div>
+            </div>
         </div>
     </section>
 
-    <!-- 9. Contact Section -->
+
+    <!-- 9. Transformations Section -->
+    <section id="transformations" class="transformations padding-section">
+        <div class="container">
+            <div class="section-header text-center mb-5 scroll-anim">
+                <h2 class="section-title">Real <span class="highlight">Transformations</span>. Real Results.</h2>
+                <p class="section-subtitle">See how our members transformed their bodies, confidence, and lives at Body Station.</p>
+            </div>
+            <div class="transformation-grid">
+                <div class="transformation-card scroll-anim">
+                    <div class="transformation-img">
+                        <img src="transformations/body1.jpeg" alt="Transformation 1" loading="lazy">
+                        <div class="transformation-label">Success Story #1</div>
+                    </div>
+                </div>
+                <div class="transformation-card scroll-anim">
+                    <div class="transformation-img">
+                        <img src="transformations/body2.jpeg" alt="Transformation 2" loading="lazy">
+                        <div class="transformation-label">Success Story #2</div>
+                    </div>
+                </div>
+                <div class="transformation-card scroll-anim">
+                    <div class="transformation-img">
+                        <img src="transformations/body3.jpeg" alt="Transformation 3" loading="lazy">
+                        <div class="transformation-label">Success Story #3</div>
+                    </div>
+                </div>
+                <div class="transformation-card scroll-anim">
+                    <div class="transformation-img">
+                        <img src="transformations/body4.jpeg" alt="Transformation 4" loading="lazy">
+                        <div class="transformation-label">Success Story #4</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 10. Contact Section -->
     <section id="contact" class="contact padding-section">
         <div class="contact-header text-center mb-4">
             <h2 class="section-title" style="margin-bottom: 0.5rem;">Get In <span class="highlight">Touch</span></h2>
@@ -218,21 +443,42 @@
         <div class="contact-container">
             <div class="contact-form-wrapper glass scroll-anim">
                 <h3>Request a Callback</h3>
+                <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 0.5rem;">
+                    Enter your details and choose how to reach us
+                </p>
                 <form id="contact-form" class="contact-form mt-4">
                     <input type="text" id="name" placeholder="Your Name" required>
                     <input type="tel" id="mobile" placeholder="Mobile Number" required>
-                    <button type="submit" class="btn primary-btn w-100" style="padding:1.2rem;">Send Request</button>
-                    <div id="form-message" class="success-msg" style="display:none;">Details received! We'll call you shortly.</div>
+                    
+                    <div style="display: flex; gap: 1rem; margin-top: 0.5rem;">
+                        <button type="button" id="send-whatsapp-btn" class="btn w-100" style="padding: 1rem; background: #25D366; color: #fff; border: none; border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 0.5rem; transition: all 0.3s ease;">
+                            <i class="fab fa-whatsapp" style="font-size: 1.3rem;"></i> WhatsApp
+                        </button>
+                        <button type="button" id="send-email-btn" class="btn w-100" style="padding: 1rem; background: linear-gradient(135deg, #EA4335, #FF6F61); color: #fff; border: none; border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 0.5rem; transition: all 0.3s ease;">
+                            <i class="fas fa-envelope" style="font-size: 1.2rem;"></i> Email
+                        </button>
+                    </div>
+                    
+                    <div id="form-message" class="success-msg" style="display:none;">Details sent! We'll call you shortly.</div>
                 </form>
                 
                 <div class="contact-details mt-4">
-                    <p><i class="fas fa-map-marker-alt highlight"></i> Main Road, Shadnagar, Telangana 509216</p>
+                    <p>
+                        <i class="fas fa-map-marker-alt highlight"></i> 
+                        <a href="https://maps.app.goo.gl/AWBh5AUiCMBtF5bS7" target="_blank" rel="noopener noreferrer" style="color: inherit; text-decoration: none;">
+                            Main Road, Shadnagar, Telangana 509216
+                        </a>
+                    </p>
                     <p><i class="fas fa-phone-alt highlight"></i> <a href="tel:9642767824">9642767824</a></p>
                     <p><i class="fas fa-clock highlight"></i> Mon-Sat: 5:00 AM - 10:00 PM</p>
+                    <a href="https://maps.app.goo.gl/AWBh5AUiCMBtF5bS7" target="_blank" rel="noopener noreferrer" class="btn outline-btn mt-3" style="font-size: 0.9rem; padding: 0.6rem 1.2rem;">
+                        <i class="fas fa-directions"></i> Get Directions
+                    </a>
                 </div>
             </div>
-            <div class="contact-map scroll-anim">
-                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15250.778007684074!2d78.1969!3d17.0691!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMzc3Mys2UiwgU2hhZG5hZ2Fy!5e0!3m2!1sen!2sin!4v1680000000000!5m2!1sen!2sin" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+            <div class="contact-map scroll-anim" style="position: relative;">
+                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3814.195296100827!2d78.2045916!3d17.0630973!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bcbc9cb586ba0eb%3A0xd3b76c56001f560d!2sBody%20Station%20The%20Fitness%20Club!5e0!3m2!1sen!2sin!4v1777701596752!5m2!1sen!2sin" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+                <a href="https://maps.app.goo.gl/AWBh5AUiCMBtF5bS7" target="_blank" rel="noopener noreferrer" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 5; background: transparent;" title="Open in Google Maps"></a>
             </div>
         </div>
     </section>
@@ -241,11 +487,14 @@
     <footer>
         <div class="footer-content">
             <div class="footer-brand">
-                <h3>Body Station <span class="highlight">The Fitness Club</span></h3>
+                <div class="footer-logo-row">
+                    <img src="logo_sizes/logo_mobile_128x128.png" alt="Body Station Fitness Club Logo" class="footer-logo-img" width="48" height="48" loading="lazy">
+                    <h3>Body Station <span class="highlight">The Fitness Club</span></h3>
+                </div>
                 <p class="telugu-text">బాడీ స్టేషన్ ది ఫిట్నెస్ క్లబ్</p>
                 <p class="mt-2">Transforming lives in Shadnagar.</p>
                 <div class="socials mt-3">
-                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="https://www.instagram.com/bodystationthefitnessclub?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
                     <a href="#"><i class="fab fa-facebook-f"></i></a>
                     <a href="#"><i class="fab fa-whatsapp"></i></a>
                 </div>
@@ -284,7 +533,7 @@
         </div>
         <div class="chatbot-messages" id="chatbot-messages">
             <div class="chat-msg ai-msg">
-                <p>Hi there! 👋 I'm the Body Station AI. Ask me anything about our membership plans, gym timings, or get some quick diet tips!</p>
+                <p>Hi there! 👋 I'm the Body Station AI. I'm here to help you smash your fitness goals! Ask me about our membership plans, timings, or for some quick diet tips!</p>
             </div>
         </div>
         <div class="chatbot-input">
@@ -298,6 +547,6 @@
     </button>
     <!-- AI Chatbot End -->
 
-    <script src="index.js"></script>
+    <script type="module" src="index.js"></script>
 </body>
 </html>

@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Owner Admin Dashboard | Body Station Fitness Club</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="index.css">
+    <link rel="stylesheet" href="admin.css">
+</head>
+<body class="admin-body">
+
+    <!-- Auth Guard / Login Overlay -->
+    <div id="login-overlay" class="auth-overlay">
+        <div class="login-card glass">
+            <div class="login-header">
+                <img src="logo_sizes/logo_navbar_2x.png" alt="Logo" width="60">
+                <h2>Owner <span class="highlight">Login</span></h2>
+                <p>Private access for Body Station Owner only</p>
+            </div>
+            <form id="admin-login-form" class="auth-form">
+                <div class="input-group">
+                    <i class="fas fa-envelope"></i>
+                    <input type="email" id="admin-email" placeholder="Owner Email" required>
+                </div>
+                <div class="input-group">
+                    <i class="fas fa-lock"></i>
+                    <input type="password" id="admin-password" placeholder="Password" required>
+                </div>
+                <button type="submit" class="btn primary-btn w-100">Access Dashboard</button>
+            </form>
+            <div id="auth-error" class="error-msg" style="display:none;"></div>
+            <a href="index.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to Site</a>
+        </div>
+    </div>
+
+    <!-- Admin Dashboard (Hidden by default) -->
+    <div id="admin-dashboard" class="dashboard-container" style="display:none;">
+        <!-- Sidebar -->
+        <aside class="sidebar glass">
+            <div class="sidebar-header">
+                <img src="logo_sizes/logo_navbar_2x.png" alt="Logo" width="40">
+                <h3>Admin <span class="highlight">Panel</span></h3>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="#" class="active"><i class="fas fa-users"></i> Customers</a>
+                <a href="#" id="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</a>
+            </nav>
+            <div class="owner-badge">
+                <i class="fas fa-user-shield highlight"></i>
+                <span>Owner Session Active</span>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="dashboard-header">
+                <div class="header-left">
+                    <h1>Customer <span class="highlight">Management</span></h1>
+                    <p>Manage memberships and member data</p>
+                </div>
+                <div class="header-right">
+                    <button id="open-add-modal" class="btn primary-btn"><i class="fas fa-plus"></i> Add New Member</button>
+                </div>
+            </header>
+
+            <!-- Stats Bar -->
+            <div class="stats-grid">
+                <div class="stat-card glass">
+                    <div class="stat-icon"><i class="fas fa-users"></i></div>
+                    <div class="stat-info">
+                        <h3 id="total-members">0</h3>
+                        <p>Total Members</p>
+                    </div>
+                </div>
+                <div class="stat-card glass">
+                    <div class="stat-icon highlight"><i class="fas fa-calendar-check"></i></div>
+                    <div class="stat-info">
+                        <h3 id="active-members">0</h3>
+                        <p>Active This Month</p>
+                    </div>
+                </div>
+                <div class="stat-card glass">
+                    <div class="stat-icon"><i class="fas fa-indian-rupee-sign"></i></div>
+                    <div class="stat-info">
+                        <h3 id="monthly-revenue">₹0</h3>
+                        <p>Estimated Revenue</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Search & Filter -->
+            <div class="filter-bar glass">
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="customer-search" placeholder="Search by name or phone...">
+                </div>
+                <div class="filter-options">
+                    <select id="filter-plan">
+                        <option value="all">All Plans</option>
+                        <option value="1">1 Month</option>
+                        <option value="3">3 Months</option>
+                        <option value="6">6 Months</option>
+                        <option value="12">12 Months</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Customer Table -->
+            <div class="table-container glass">
+                <table id="customer-table">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Plan</th>
+                            <th>Membership</th>
+                            <th>Join Date</th>
+                            <th>Exit Date</th>
+                            <th>Phone</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="customer-list">
+                        <!-- Data will be loaded here -->
+                    </tbody>
+                </table>
+                <div id="no-data" class="no-data" style="display:none;">
+                    <i class="fas fa-folder-open"></i>
+                    <p>No customer records found.</p>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Add Member Modal -->
+    <div id="member-modal" class="modal-overlay" style="display:none;">
+        <div class="modal-content glass">
+            <div class="modal-header">
+                <h2><i class="fas fa-user-plus highlight"></i> Add <span class="highlight">New Member</span></h2>
+                <button id="close-modal" class="close-btn"><i class="fas fa-times"></i></button>
+            </div>
+            <form id="member-form" class="member-form">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Full Name</label>
+                        <input type="text" id="member-name" required placeholder="Full Name">
+                    </div>
+                    <div class="form-group">
+                        <label>Phone Number</label>
+                        <input type="tel" id="member-phone" required placeholder="Phone Number">
+                    </div>
+                    <div class="form-group full-width">
+                        <label>Address</label>
+                        <input type="text" id="member-address" required placeholder="Complete Address">
+                    </div>
+                    <div class="form-group">
+                        <label>Plan Duration</label>
+                        <select id="member-plan" required>
+                            <option value="">Select Plan</option>
+                            <option value="1">1 Month</option>
+                            <option value="3">3 Months</option>
+                            <option value="6">6 Months</option>
+                            <option value="12">12 Months</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Membership Type</label>
+                        <select id="member-type" required>
+                            <option value="">Select Type</option>
+                            <option value="Basic">Basic</option>
+                            <option value="Standard">Standard</option>
+                            <option value="Pro">Pro</option>
+                            <option value="Elite">Elite</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Auto-calculated Price</label>
+                        <input type="text" id="member-price" readonly placeholder="Price will auto-fill">
+                    </div>
+                    <div class="form-group">
+                        <label>Date of Joining</label>
+                        <input type="date" id="member-join" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Date of Exit</label>
+                        <input type="date" id="member-exit" readonly>
+                    </div>
+                    <div class="form-group full-width">
+                        <label>Requirements / Special Notes</label>
+                        <textarea id="member-requirements" placeholder="Member requirements or health notes..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Offers Given</label>
+                        <input type="text" id="member-offers" placeholder="e.g. Free 1 Week extension">
+                    </div>
+                    <div class="form-group">
+                        <label>Personal Trainer</label>
+                        <select id="member-trainer">
+                            <option value="No">No</option>
+                            <option value="Yes">Yes</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Special Timings</label>
+                        <input type="text" id="member-timing" placeholder="e.g. 6AM - 8AM Only">
+                    </div>
+                    <div class="form-group">
+                        <label>Custom Notes</label>
+                        <input type="text" id="member-custom" placeholder="Internal admin notes">
+                    </div>
+                </div>
+                <div class="form-actions mt-4">
+                    <button type="submit" class="btn primary-btn w-100">Save Customer Data</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script type="module" src="admin.js"></script>
+</body>
+</html>

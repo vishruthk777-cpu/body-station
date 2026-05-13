@@ -1,0 +1,11 @@
+{
+  "name": "new-project-id",
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "npx http-server -p 8080"
+  },
+  "dependencies": {
+    "firebase": "^12.12.1",
+    "firebase-admin": "^13.8.0"
+  }
+}
