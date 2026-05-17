@@ -655,7 +655,7 @@ footer { background: #050505; padding: 5rem 5% 2rem; border-top: 1px solid rgba(
 
 .transformation-grid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(3, 1fr);
     gap: 2rem;
     max-width: 1000px;
     margin: 0 auto;
