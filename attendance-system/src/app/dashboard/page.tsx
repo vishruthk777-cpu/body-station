@@ -345,7 +345,7 @@ export default function Dashboard() {
                     <h2 className="text-3xl font-black mb-4 text-white">Initialize Your AI Coach</h2>
                     <p className="text-slate-400 max-w-lg mx-auto mb-8">To unlock personalized protocols and performance tracking, our AI needs to understand your biology and goals.</p>
                     <OnboardingForm 
-                      userId={user.uid} 
+                      userId={user?.uid || ""} 
                       onComplete={(analysis) => setUserData({ ...userData, isOnboarded: true, aiState: analysis })} 
                     />
                   </div>

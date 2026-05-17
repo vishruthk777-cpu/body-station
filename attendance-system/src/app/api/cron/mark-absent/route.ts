@@ -14,7 +14,7 @@ export async function GET(req: Request) {
 
     // 2. Fetch all Active Members
     const membersSnap = await adminDb.collection("users").where("status", "==", "ACTIVE").get();
-    const allMembers = membersSnap.docs.map(doc => ({ uid: doc.id, ...doc.data() }));
+    const allMembers = membersSnap.docs.map(doc => ({ uid: doc.id, ...doc.data() } as any));
 
     // 3. Fetch all Attendance for today
     const attendanceSnap = await adminDb

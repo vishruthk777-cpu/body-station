@@ -40,7 +40,7 @@ export async function submitSelfCheckin(token: string) {
     if (!uid) return { success: false, message: "Invalid or corrupted QR token." };
 
     // Get Device and IP (optional, good for security)
-    const headersList = headers();
+    const headersList = await headers();
     const userAgent = headersList.get("user-agent") || "Unknown Device";
     const ip = headersList.get("x-forwarded-for") || "Unknown IP";
 
